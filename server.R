@@ -119,9 +119,9 @@ shinyServer(function(input, output) {
       
       # temporarily switch to the temp dir, in case you do not have write
       # permission to the current working directory
-      # owd <- setwd(tempdir())
-      # on.exit(setwd(owd))
-      # file.copy(src, 'report.Rmd')
+      owd <- setwd(tempdir())
+      on.exit(setwd(owd))
+      file.copy(src, 'report.Rmd')
       
       library(rmarkdown)
       out <- render('report.Rmd', switch(
