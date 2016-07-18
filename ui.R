@@ -30,6 +30,7 @@ shinyUI(fluidPage(
       numericInput("stamp_width","stamp width (mm)",value=2),
       numericInput("stamp_height","stamp height (mm)",value=1),
       actionButton("remove_last","remove last stamp"),
+      h5("For som eunknown reasons, only word output is working on this server"),
       radioButtons('format', 'Document format', c('PDF', 'HTML', 'Word'),
                    inline = TRUE),
       downloadButton("Report")

@@ -18,7 +18,17 @@
 
 
 library(shiny)
+# library(jpeg)
+# library(png)
+# library(jpeg)
+# library(knitr)
+# library(markdown)
+# library(abind)
 library(DLC)
+library(rmarkdown)
+
+# source("R/f.read.image.R")
+# source("R/raster.R")
 
 shinyServer(function(input, output) {
 
@@ -26,7 +36,10 @@ shinyServer(function(input, output) {
     validate(
       need(!is.null(input$files), "Please upload the pictures")
     )
-    f.read.image(input$files$datapath, height = 1000 - 10*input$cropping*2, ls.format = T)
+    validate(
+      need("DLC" %in% installed.packages(), "Install the DLC package: devtools::install_github('DimitriF/DLC')")
+    )
+    DLC::f.read.image(input$files$datapath, height = 1000 - 10*input$cropping*2, ls.format = T)
   })
   
   coord <- reactiveValues(x=NULL,y=NULL)
@@ -56,7 +69,7 @@ shinyServer(function(input, output) {
   
   pict.1 <- reactive({
     par(mar=c(0,0,3,0),xaxt="n",yaxt="n")
-    raster(files()[[1]],main=input$files$name[1],xlim=c(0,2*dim(files()[[1]])[1]))
+    DLC::raster(files()[[1]],main=input$files$name[1],xlim=c(0,2*dim(files()[[1]])[1]))
     if(!is.null(coord$x)){
       text(x=coord$x,y=coord$y,label=seq(length(coord$x)),col="red",pos = 3)
       symbols(x=coord$x,y=coord$y,fg="red",inches = F,add = T,rectangles = cbind(rep(input$stamp_width*10,length(coord$x)),rep(input$stamp_height*10,length(coord$x))))
@@ -67,7 +80,7 @@ shinyServer(function(input, output) {
       need(length(files()) >= 2, "need 2 files to show the third picture")
     )
     par(mar=c(0,0,3,0),xaxt="n",yaxt="n")
-    raster(files()[[2]],main=input$files$name[2],xlim=c(0,2*dim(files()[[2]])[1]))
+    DLC::raster(files()[[2]],main=input$files$name[2],xlim=c(0,2*dim(files()[[2]])[1]))
     if(!is.null(coord$x)){
       text(x=coord$x,y=coord$y,label=seq(length(coord$x)),col="red",pos = 3)
       symbols(x=coord$x,y=coord$y,fg="red",inches = F,add = T,rectangles = cbind(rep(input$stamp_width*10,length(coord$x)),rep(input$stamp_height*10,length(coord$x))))
@@ -78,7 +91,7 @@ shinyServer(function(input, output) {
       need(length(files()) >= 3, "need 3 files to show the third picture")
     )
     par(mar=c(0,0,3,0),xaxt="n",yaxt="n")
-    raster(files()[[3]],main=input$files$name[3],xlim=c(0,2*dim(files()[[3]])[1]))
+    DLC::raster(files()[[3]],main=input$files$name[3],xlim=c(0,2*dim(files()[[3]])[1]))
     if(!is.null(coord$x)){
       text(x=coord$x,y=coord$y,label=seq(length(coord$x)),col="red",pos = 3)
       symbols(x=coord$x,y=coord$y,fg="red",inches = F,add = T,rectangles = cbind(rep(input$stamp_width*10,length(coord$x)),rep(input$stamp_height*10,length(coord$x))))
@@ -100,7 +113,12 @@ shinyServer(function(input, output) {
     data$stamp = seq(nrow(data))
     data$x = data$pictX/10 + input$cropping
     data$y = data$pictY/10 + input$cropping
-    data[,3:5]
+    data$reverse_y = 100 - data$y
+    data$Rt = rep("         ",nrow(data))
+    data$mz_pos = rep("         ",nrow(data))
+    data$mz_neg = rep("         ",nrow(data))
+    data$remark = rep("               ",nrow(data))
+    data[,3:ncol(data)]
   })
   
   output$table <- renderTable({
@@ -109,7 +127,7 @@ shinyServer(function(input, output) {
   
   output$Report <- downloadHandler(
     filename = function() {
-      paste('my-report', sep = '.', switch(
+      paste('Orbiprep_report', sep = '.', switch(
         input$format, PDF = 'pdf', HTML = 'html', Word = 'docx'
       ))
     },
