@@ -41,5 +41,5 @@ if(length(files()) >= 3){
 ```
 
 ```{r table,results="asis"}
-kable(table.dim(),include.rownames = F)
+kable(table.dim(),row.names = F)
 ```
