@@ -40,5 +40,6 @@ if(length(files()) >= 3){
 ```
 
 ```{r table,results="asis"}
-print(xtable(table.dim()),include.rownames = F,hline.after =T)
+# print(xtable(table.dim()),include.rownames = F,hline.after =T)
+kable(table.dim(),include.rownames = F)
 ```
