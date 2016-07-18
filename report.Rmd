@@ -7,6 +7,7 @@ date: "`r Sys.Date()`"
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = F,fig.height=3.5,fig.width=7,dpi=300)
 library(knitr)
+library(xtable)
 ```
 
 
