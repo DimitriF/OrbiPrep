@@ -1,11 +1,13 @@
 ---
 title: "Orbitrap Preparation"
 date: "`r Sys.Date()`"
+header-includes:
+     - \usepackage{longtable}
 ---
 
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = F,fig.height=3.5,fig.width=7,dpi=300)
+knitr::opts_chunk$set(dpi=300, cache=FALSE,echo=F,warning=F,message=F,autodep=T,fig.height=3.5,fig.width=7,dpi=300)
 library(knitr)
 library(xtable)
 ```
@@ -41,5 +43,12 @@ if(length(files()) >= 3){
 ```
 
 ```{r table,results="asis"}
-kable(table.dim(),row.names = F)
+# # kable(table.dim(),row.names = F)
+truc = xtable(table.dim())
+align(truc) = "rr|r|r|r|r|r|r|r|r"
+print(truc,include.rownames = F,hline.after = -1:nrow(table.dim()),
+      size = "\\fontsize{8pt}{30pt}\\selectfont",
+      comment=F, tabular.environment='longtable')
+# kable(table.dim())
 ```
+  

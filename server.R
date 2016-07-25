@@ -98,26 +98,27 @@ shinyServer(function(input, output) {
     }
   })
   
-  output$pict.1 <- renderPlot({
+  output$pict_1 <- renderPlot({
     pict.1()
   })
-  output$pict.2 <- renderPlot({
+  output$pict_2 <- renderPlot({
     pict.2()
   })
-  output$pict.3 <- renderPlot({
+  output$pict_3 <- renderPlot({
     pict.3()
   })
   
   table.dim <- reactive({
     data <- data.frame(pictX = coord$x, pictY = coord$y)
+    data$band_info = rep("         ",nrow(data))
     data$stamp = seq(nrow(data))
     data$x = data$pictX/10 + input$cropping
     data$y = data$pictY/10 + input$cropping
-    data$reverse_y = 100 - data$y
+    data$reverse_y = 100 - data$y + input$bias
     data$Rt = rep("         ",nrow(data))
     data$mz_pos = rep("         ",nrow(data))
     data$mz_neg = rep("         ",nrow(data))
-    data$remark = rep("               ",nrow(data))
+    data$Comments = rep("               ",nrow(data))
     data[,3:ncol(data)]
   })
   
@@ -137,9 +138,9 @@ shinyServer(function(input, output) {
       
       # temporarily switch to the temp dir, in case you do not have write
       # permission to the current working directory
-      owd <- setwd(tempdir())
-      on.exit(setwd(owd))
-      file.copy(src, 'report.Rmd')
+      # owd <- setwd(tempdir())
+      # on.exit(setwd(owd))
+      # file.copy(src, 'report.Rmd')
       
       library(rmarkdown)
       out <- render('report.Rmd', switch(
